@@ -1,0 +1,991 @@
+{
+	"info": {
+		"_postman_id": "c0e620bd-d1bf-4f24-9bbf-cc7b1897d216",
+		"name": "Smart Farmer Community Portal",
+		"description": "Production-ready Postman Collection for the Smart Farmer Community Portal REST API.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "fullname", "value": "John Doe", "type": "text" },
+								{ "key": "username", "value": "johndoe", "type": "text" },
+								{ "key": "email", "value": "johndoe@example.com", "type": "text" },
+								{ "key": "password", "value": "SecurePass123", "type": "text" },
+								{ "key": "state", "value": "Punjab", "type": "text" },
+								{ "key": "district", "value": "Ludhiana", "type": "text" },
+								{ "key": "village", "value": "Kila Raipur", "type": "text" },
+								{ "key": "phone", "value": "+919876543210", "type": "text" },
+								{ "key": "avatar", "type": "file", "src": [] }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "users", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.success && response.data) {",
+									"    pm.environment.set(\"accessToken\", response.data.accessToken);",
+									"    pm.environment.set(\"refreshToken\", response.data.refreshToken);",
+									"}"
+								],
+								"type": "javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "users", "login"]
+						}
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/current-user",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "users", "current-user"]
+						}
+					}
+				},
+				{
+					"name": "Update Profile Info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullname\": \"Johnathan Doe\",\n  \"email\": \"johndoe@example.com\",\n  \"state\": \"Haryana\",\n  \"district\": \"Ambala\",\n  \"village\": \"Saha\",\n  \"phone\": \"+919876543210\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/update-account",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "users", "update-account"]
+						}
+					}
+				},
+				{
+					"name": "Update Avatar Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "avatar", "type": "file", "src": [] }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/avatar",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "users", "avatar"]
+						}
+					}
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldpassword\": \"SecurePass123\",\n  \"newpassword\": \"NewSecurePass123\",\n  \"confpassword\": \"NewSecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/change-password",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "users", "change-password"]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/refresh-token",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "users", "refresh-token"]
+						}
+					}
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "users", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Crop Reviews",
+			"item": [
+				{
+					"name": "Publish Crop Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "cropName", "value": "Wheat", "type": "text" },
+								{ "key": "season", "value": "Rabi", "type": "text" },
+								{ "key": "soilType", "value": "Alluvial", "type": "text" },
+								{ "key": "irrigationMethod", "value": "Canal & Tube Well", "type": "text" },
+								{ "key": "fertilizerUsed", "value": "Urea & NPK", "type": "text" },
+								{ "key": "description", "value": "Bumper yield recorded with balanced NPK fertilizer usage.", "type": "text" },
+								{ "key": "rating", "value": "5", "type": "text" },
+								{ "key": "expectedYield", "value": "20 Quintal/Acre", "type": "text" },
+								{ "key": "actualYield", "value": "22 Quintal/Acre", "type": "text" },
+								{ "key": "state", "value": "Punjab", "type": "text" },
+								{ "key": "district", "value": "Ludhiana", "type": "text" },
+								{ "key": "images", "type": "file", "src": [] }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/crop-reviews",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "crop-reviews"]
+						}
+					}
+				},
+				{
+					"name": "Get All Crop Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/crop-reviews?cropName=Wheat&season=Rabi&page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "crop-reviews"],
+							"query": [
+								{ "key": "cropName", "value": "Wheat" },
+								{ "key": "season", "value": "Rabi" },
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Crop Review By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/crop-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "crop-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_crop_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Crop Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "description", "value": "Updated description indicating higher yield than initial estimate.", "type": "text" },
+								{ "key": "rating", "value": "5", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/crop-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "crop-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_crop_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Crop Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/crop-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "crop-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_crop_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Toggle Like Crop Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/crop-reviews/toggle-like/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "crop-reviews", "toggle-like", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_crop_review_id_here" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Seed Reviews",
+			"item": [
+				{
+					"name": "Create Seed Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "seedBrand", "value": "Pioneer Seeds", "type": "text" },
+								{ "key": "cropName", "value": "Maize", "type": "text" },
+								{ "key": "germinationRate", "value": "95%", "type": "text" },
+								{ "key": "diseaseResistance", "value": "High (Stem rot resistant)", "type": "text" },
+								{ "key": "description", "value": "Outstanding seedling vigor and germination rates.", "type": "text" },
+								{ "key": "rating", "value": "5", "type": "text" },
+								{ "key": "price", "value": "450", "type": "text" },
+								{ "key": "images", "type": "file", "src": [] }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/seed-reviews",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "seed-reviews"]
+						}
+					}
+				},
+				{
+					"name": "Get All Seed Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/seed-reviews?seedBrand=Pioneer&page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "seed-reviews"],
+							"query": [
+								{ "key": "seedBrand", "value": "Pioneer" },
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Seed Review By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/seed-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "seed-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_seed_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Seed Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "description", "value": "Exceptional resistance observed throughout Rabi season.", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/seed-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "seed-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_seed_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Seed Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/seed-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "seed-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_seed_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Toggle Like Seed Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/seed-reviews/toggle-like/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "seed-reviews", "toggle-like", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_seed_review_id_here" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Fertilizer Reviews",
+			"item": [
+				{
+					"name": "Create Fertilizer Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "fertilizerName", "value": "IFFCO NPK 12:32:16", "type": "text" },
+								{ "key": "suitableCrop", "value": "Potato", "type": "text" },
+								{ "key": "usageMethod", "value": "Soil Application during sowing", "type": "text" },
+								{ "key": "effectiveness", "value": "Excellent tuber development", "type": "text" },
+								{ "key": "description", "value": "Helped achieve high potato tuber counts and robust growth.", "type": "text" },
+								{ "key": "rating", "value": "5", "type": "text" },
+								{ "key": "images", "type": "file", "src": [] }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/fertilizer-reviews",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "fertilizer-reviews"]
+						}
+					}
+				},
+				{
+					"name": "Get All Fertilizer Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/fertilizer-reviews?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "fertilizer-reviews"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Fertilizer Review By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/fertilizer-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "fertilizer-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_fertilizer_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Fertilizer Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "effectiveness", "value": "Outstanding result when combined with compost.", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/fertilizer-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "fertilizer-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_fertilizer_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Fertilizer Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/fertilizer-reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "fertilizer-reviews", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_fertilizer_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Toggle Like Fertilizer Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/fertilizer-reviews/toggle-like/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "fertilizer-reviews", "toggle-like", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_fertilizer_review_id_here" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Questions & Answers",
+			"item": [
+				{
+					"name": "Ask Question",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"How to control yellow rust in wheat?\",\n  \"description\": \"I am seeing yellow rust symptoms on some leaves. What chemical or biological sprays do you recommend?\",\n  \"cropCategory\": \"Wheat\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/questions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "questions"]
+						}
+					}
+				},
+				{
+					"name": "Get All Questions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/questions?cropCategory=Wheat&page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "questions"],
+							"query": [
+								{ "key": "cropCategory", "value": "Wheat" },
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Question Details (Views+Answers)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/questions/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "questions", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_question_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Question",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/questions/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "questions", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_question_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Post Answer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"answer\": \"You should spray Propiconazole 25 EC at 200 ml mixed with 200 liters of water per acre. Repeat after 15 days if yellow spots persist.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/answers/question/:questionId",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "answers", "question", ":questionId"],
+							"variable": [
+								{ "key": "questionId", "value": "paste_question_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Answer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"answer\": \"Propiconazole 25 EC works best. Ensure to spray early morning for best absorption.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/answers/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "answers", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_answer_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Answer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/answers/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "answers", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_answer_id_here" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Add Comment to Crop Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Great review! Helpful tip on irrigation frequency.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/comments/crop/:cropReviewId",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "comments", "crop", ":cropReviewId"],
+							"variable": [
+								{ "key": "cropReviewId", "value": "paste_crop_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Comments for Crop Review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/comments/crop/:cropReviewId?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "comments", "crop", ":cropReviewId"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" }
+							],
+							"variable": [
+								{ "key": "cropReviewId", "value": "paste_crop_review_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Updated comment content. Very detailed crop analysis, thank you.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/comments/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "comments", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_comment_id_here" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/comments/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "comments", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_comment_id_here" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Bookmarks",
+			"item": [
+				{
+					"name": "Bookmark Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json", "type": "text" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cropReviewId\": \"paste_crop_review_id_here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookmarks",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "bookmarks"]
+						}
+					}
+				},
+				{
+					"name": "Get User Bookmarks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookmarks?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "bookmarks"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Remove Bookmark",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookmarks/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "bookmarks", ":id"],
+							"variable": [
+								{ "key": "id", "value": "paste_bookmark_id_or_review_id_here" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Get Dashboard Stats",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dashboard",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dashboard"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Search APIs",
+			"item": [
+				{
+					"name": "Unified Search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/search?cropName=Wheat&state=Punjab&rating=5",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "search"],
+							"query": [
+								{ "key": "cropName", "value": "Wheat" },
+								{ "key": "state", "value": "Punjab" },
+								{ "key": "rating", "value": "5" }
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{ "key": "baseUrl", "value": "http://localhost:8000", "type": "string" }
+	]
+}
