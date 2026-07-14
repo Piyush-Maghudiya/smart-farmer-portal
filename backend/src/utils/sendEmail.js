@@ -50,7 +50,7 @@ export const sendEmail = async (email, subject, otp) => {
             console.log(`[Email] Verification email sent successfully to ${email}`);
             return true;
         } catch (error) {
-            console.error(`[Email Error] Failed to send email to ${email}:`, error.message);
+            console.error(`[Email Error] Failed to send email to ${email}:`, error);
             // Don't crash the server, fall back to console in case of delivery failure
         }
     }
