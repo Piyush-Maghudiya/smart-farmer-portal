@@ -28,21 +28,50 @@ function CropPhotoForm({ initialData = null, isEdit = false }) {
     }, [initialData, setValue]);
 
     const handleFileChange = (e) => {
-        const files = Array.from(e.target.files).slice(0, 5);
-        setImages(files);
-        setPreviews(files.map((file) => ({
-            url: URL.createObjectURL(file),
-            existing: false,
-            name: file.name
-        })));
+        setError("");
+        const selectedFiles = Array.from(e.target.files);
+        
+        // Filter out non-images
+        const imageFiles = selectedFiles.filter(file => file.type.startsWith("image/"));
+        if (imageFiles.length !== selectedFiles.length) {
+            setError("Only image files are allowed");
+        }
+
+        // Calculate available slots (max 5 total)
+        const currentCount = previews.length;
+        const availableSlots = 5 - currentCount;
+
+        if (availableSlots <= 0) {
+            setError("Maximum limit of 5 crop photos reached.");
+            return;
+        }
+
+        let filesToAdd = imageFiles;
+        if (imageFiles.length > availableSlots) {
+            setError(`You can only upload up to 5 photos. Added the first ${availableSlots} files.`);
+            filesToAdd = imageFiles.slice(0, availableSlots);
+        }
+
+        if (filesToAdd.length > 0) {
+            setImages((prev) => [...prev, ...filesToAdd]);
+            const newPreviews = filesToAdd.map((file) => ({
+                url: URL.createObjectURL(file),
+                existing: false,
+                name: file.name
+            }));
+            setPreviews((prev) => [...prev, ...newPreviews]);
+        }
     };
 
     const removePreview = (index) => {
+        setError("");
+        const previewToRemove = previews[index];
         const newPreviews = previews.filter((_, i) => i !== index);
         setPreviews(newPreviews);
-        if (!previews[index]?.existing) {
+        
+        if (previewToRemove && !previewToRemove.existing) {
             const fileIndex = previews.slice(0, index).filter((p) => !p.existing).length;
-            setImages(images.filter((_, i) => i !== fileIndex));
+            setImages((prev) => prev.filter((_, i) => i !== fileIndex));
         }
     };
 

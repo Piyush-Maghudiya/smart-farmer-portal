@@ -104,10 +104,10 @@ function ReviewCard({ review, type = "crop" }) {
                             <img
                                 src={review.ownerDetails.avatar.url}
                                 alt={review.ownerDetails.fullname}
-                                className="w-5.5 h-5.5 rounded-full object-cover"
+                                className="w-6 h-6 rounded-full object-cover"
                             />
                         ) : (
-                            <div className="w-5.5 h-5.5 rounded-full bg-slate-800 flex items-center justify-center font-bold text-[10px]">
+                            <div className="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center font-bold text-[10px]">
                                 {review.ownerDetails?.fullname?.charAt(0).toUpperCase() || "F"}
                             </div>
                         )}

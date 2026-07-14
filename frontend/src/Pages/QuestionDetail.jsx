@@ -21,13 +21,23 @@ function RoleBadge({ role }) {
     );
 }
 
+const SIZE_CLASSES = {
+    6: "w-6 h-6 text-[10px]",
+    7: "w-7 h-7 text-xs",
+    8: "w-8 h-8 text-xs",
+    9: "w-9 h-9 text-sm",
+    10: "w-10 h-10 text-base",
+    12: "w-12 h-12 text-lg",
+    16: "w-16 h-16 text-xl",
+};
+
 function UserAvatar({ user, size = 10 }) {
-    const sizeClass = `w-${size} h-${size}`;
+    const sizeClass = SIZE_CLASSES[size] || "w-10 h-10 text-base";
     if (user?.avatar?.url) {
         return <img src={user.avatar.url} alt={user.fullname} className={`${sizeClass} rounded-full object-cover ring-2 ring-slate-700`} />;
     }
     return (
-        <div className={`${sizeClass} rounded-full bg-gradient-to-br from-green-600 to-emerald-800 flex items-center justify-center font-bold text-white text-sm ring-2 ring-slate-700`}>
+        <div className={`${sizeClass} rounded-full bg-gradient-to-br from-green-600 to-emerald-800 flex items-center justify-center font-bold text-white ring-2 ring-slate-700`}>
             {user?.fullname?.charAt(0)?.toUpperCase() || "?"}
         </div>
     );

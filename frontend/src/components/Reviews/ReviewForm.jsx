@@ -33,8 +33,31 @@ function ReviewForm({ initialData = null, type = "crop", isEdit = false }) {
     };
 
     const handleFileChange = (e) => {
-        const files = Array.from(e.target.files);
-        setImages(files);
+        setError("");
+        const selectedFiles = Array.from(e.target.files);
+        
+        const currentCount = images.length;
+        const availableSlots = 5 - currentCount;
+
+        if (availableSlots <= 0) {
+            setError("Maximum limit of 5 attachments reached.");
+            return;
+        }
+
+        let filesToAdd = selectedFiles;
+        if (selectedFiles.length > availableSlots) {
+            setError(`You can only attach up to 5 files. Added the first ${availableSlots} files.`);
+            filesToAdd = selectedFiles.slice(0, availableSlots);
+        }
+
+        if (filesToAdd.length > 0) {
+            setImages((prev) => [...prev, ...filesToAdd]);
+        }
+    };
+
+    const removeFile = (index) => {
+        setError("");
+        setImages((prev) => prev.filter((_, i) => i !== index));
     };
 
     const onSubmit = async (data) => {
@@ -254,10 +277,17 @@ function ReviewForm({ initialData = null, type = "crop", isEdit = false }) {
                     {images.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-3">
                             {images.map((file, index) => {
-                                const isVideo = file.type.startsWith("video/");
+                                const isVideo = file.type?.startsWith("video/");
                                 return (
-                                    <span key={index} className="text-xs bg-slate-900 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                                        {isVideo ? "🎥" : "🖼️"} {file.name}
+                                    <span key={index} className="text-xs bg-slate-900 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-2">
+                                        <span>{isVideo ? "🎥" : "🖼️"} {file.name}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeFile(index)}
+                                            className="text-red-400 hover:text-red-300 transition-colors focus:outline-none cursor-pointer"
+                                        >
+                                            <X size={12} />
+                                        </button>
                                     </span>
                                 );
                             })}
