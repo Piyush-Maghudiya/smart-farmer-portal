@@ -368,6 +368,66 @@ const resendOtp = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { email: user.email }, "Verification OTP resent successfully"));
 });
 
+const forgotPasswordRequest = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) {
+        throw new ApiError(404, "User with this email does not exist");
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otp = otp;
+    user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+    await user.save({ validateBeforeSave: false });
+
+    await sendEmail(user.email, "Smart Farmer - Password Reset OTP", otp);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { email: user.email }, "Password reset OTP has been sent to your email."));
+});
+
+const forgotPasswordReset = asyncHandler(async (req, res) => {
+    const { email, otp, newPassword, confirmPassword } = req.body;
+
+    if (!email || !otp || !newPassword || !confirmPassword) {
+        throw new ApiError(400, "All fields (email, otp, newPassword, confirmPassword) are required");
+    }
+
+    if (newPassword !== confirmPassword) {
+        throw new ApiError(400, "Passwords do not match");
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    if (user.otp !== otp) {
+        throw new ApiError(400, "Invalid OTP code");
+    }
+
+    if (new Date() > user.otpExpiry) {
+        throw new ApiError(400, "OTP has expired. Please request a new one.");
+    }
+
+    user.password = newPassword;
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Password has been reset successfully. Please log in with your new password."));
+});
+
 export {
     registerUser,
     loginUser,
@@ -378,5 +438,7 @@ export {
     updateAccount,
     updateAvatar,
     verifyOtp,
-    resendOtp
+    resendOtp,
+    forgotPasswordRequest,
+    forgotPasswordReset
 };

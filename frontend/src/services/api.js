@@ -68,6 +68,12 @@ export const authService = {
     },
     resendOtp: async (email) => {
         return apiClient.post("/users/resend-otp", { email });
+    },
+    forgotPasswordRequest: async (email) => {
+        return apiClient.post("/users/forgot-password-request", { email });
+    },
+    forgotPasswordReset: async (email, otp, newPassword, confirmPassword) => {
+        return apiClient.post("/users/forgot-password-reset", { email, otp, newPassword, confirmPassword });
     }
 };
 

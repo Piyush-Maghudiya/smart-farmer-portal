@@ -22,6 +22,7 @@ import QuestionDetail from './Pages/QuestionDetail.jsx'
 import AgroMarketplace from './Pages/AgroMarketplace.jsx'
 import UploadProduct from './Pages/UploadProduct.jsx'
 import OTPVerification from './Pages/OTPVerification.jsx'
+import ForgotPassword from './Pages/ForgotPassword.jsx'
 
 // Auth wrapper guard
 import { AuthLayout } from './components/index.js'
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
                 element: (
                     <AuthLayout authentication={false}>
                         <Signup />
+                    </AuthLayout>
+                ),
+            },
+            {
+                path: "/forgot-password",
+                element: (
+                    <AuthLayout authentication={false}>
+                        <ForgotPassword />
                     </AuthLayout>
                 ),
             },

@@ -9,7 +9,9 @@ import {
     updateAccount,
     updateAvatar,
     verifyOtp,
-    resendOtp
+    resendOtp,
+    forgotPasswordRequest,
+    forgotPasswordReset
 } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import verifyjwt from "../middlewares/auth.middleware.js";
@@ -29,6 +31,8 @@ router.route("/register").post(
 router.route("/login").post(loginUser);
 router.route("/verify-otp").post(verifyOtp);
 router.route("/resend-otp").post(resendOtp);
+router.route("/forgot-password-request").post(forgotPasswordRequest);
+router.route("/forgot-password-reset").post(forgotPasswordReset);
 router.route("/logout").post(verifyjwt, logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
 router.route("/change-password").post(verifyjwt, changepassword);

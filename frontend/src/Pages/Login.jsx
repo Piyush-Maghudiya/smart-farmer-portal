@@ -91,6 +91,15 @@ function Login() {
                     />
                     {errors.password && <span className="text-xs text-red-500">{errors.password.message}</span>}
 
+                    <div className="flex justify-end">
+                        <Link
+                            to="/forgot-password"
+                            className="text-xs font-semibold text-green-500 hover:text-green-400 hover:underline transition-colors"
+                        >
+                            Forgot Password?
+                        </Link>
+                    </div>
+
                     <Button
                         type="submit"
                         disabled={loading}
